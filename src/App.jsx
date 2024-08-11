@@ -8,9 +8,9 @@ import TransactionPage from './pages/TransactionPage'
 import Header from './components/ui/Header'
 
 function App() {
-    const authUser = true
+    const authUser = true;
     return (
-        <div className='w-screen h-screen flex flex-col'>
+        <div className='w-screen'>
             {authUser && <Header />}
             <Routes>
                 <Route path="/" element={<HomePage />} />

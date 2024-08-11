@@ -1,8 +1,8 @@
-import { Button, Form, Input } from 'antd'
+import { Button, Form, Input, Radio } from 'antd'
 
 const SignUpPage = () => {
     return (
-        <div className="flex justify-center items-start flex-1">
+        <div className="flex justify-center items-center flex-1">
             <Form
                 className="min-w-[400px] p-6 bg-white rounded-lg flex flex-col gap-1"
                 layout="vertical"
@@ -53,6 +53,13 @@ const SignUpPage = () => {
                     ]}
                 >
                     <Input.Password />
+                </Form.Item>
+
+                <Form.Item label="Gender">
+                    <Radio.Group>
+                        <Radio className='bg-transparent' value="male">Male </Radio>
+                        <Radio value="female">Female</Radio>
+                    </Radio.Group>
                 </Form.Item>
 
                 <Form.Item>

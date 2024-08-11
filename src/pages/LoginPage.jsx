@@ -2,7 +2,7 @@ import { Button, Form, Input } from 'antd'
 
 const LoginPage = () => {
     return (
-        <div className="flex justify-center items-start flex-1">
+        <div className="flex justify-center items-center flex-1">
             <Form
                 className="min-w-[400px] p-8 bg-white rounded-lg flex flex-col gap-1"
                 layout="vertical"
@@ -50,7 +50,7 @@ const LoginPage = () => {
                 </Form.Item>
 
                 <p className="font-normal text-gray-400 text-center">
-                    Don&apos;t have an account? <a href="/sign-up">Sign Up</a>
+                    {"Don't"} have an account? <a href="/sign-up">Sign Up</a>
                 </p>
             </Form>
         </div>
