@@ -10,6 +10,7 @@ import { useMutation, useQuery } from '@apollo/client'
 import { LOG_OUT } from '../graphql/mutations/user.mutation'
 import { GET_TRANSACTION_STATISTICS } from '../graphql/queries/transaction.query'
 import { useEffect, useState } from 'react'
+import { GET_AUTHENTICATED_USER } from '../graphql/queries/user.query'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -18,6 +19,7 @@ const HomePage = () => {
         refetchQueries: ['GetAuthenticatedUser'],
     })
     const { data } = useQuery(GET_TRANSACTION_STATISTICS)
+    const { data: authUser } = useQuery(GET_AUTHENTICATED_USER)
 
     const [chartData, setChartData] = useState({
         labels: [],
@@ -93,7 +95,7 @@ const HomePage = () => {
                         Spend wisely, track wisely
                     </p>
                     <img
-                        src={'https://tecdn.b-cdn.net/img/new/avatars/2.webp'}
+                        src={authUser?.authUser?.profilePicture}
                         className="w-11 h-11 rounded-full border cursor-pointer"
                         alt="Avatar"
                     />
@@ -109,9 +111,11 @@ const HomePage = () => {
                     )}
                 </div>
                 <div className="flex flex-wrap w-full justify-center items-center gap-6">
-                    <div className="h-[330px] w-[330px] md:h-[360px] md:w-[360px]  ">
-                        <Doughnut data={chartData} />
-                    </div>
+                    {data?.categoryStatistics.length > 0 && (
+                        <div className="h-[330px] w-[330px] md:h-[360px] md:w-[360px]  ">
+                            <Doughnut data={chartData} />
+                        </div>
+                    )}
 
                     <TransactionForm />
                 </div>

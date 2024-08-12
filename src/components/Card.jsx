@@ -80,7 +80,7 @@ const Card = ({ transaction }) => {
                         {formatDate(transaction.date)}
                     </p>
                     <img
-                        src={'https://tecdn.b-cdn.net/img/new/avatars/2.webp'}
+                        src={transaction.user.profilePicture}
                         className="h-8 w-8 border rounded-full"
                         alt=""
                     />
