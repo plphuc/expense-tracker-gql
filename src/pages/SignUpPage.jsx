@@ -32,7 +32,6 @@ const SignUpPage = () => {
 
     const handleSubmit = async () => {
         try {
-            console.log(signUpData)
 
             await signUp({
                 variables: {

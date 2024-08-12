@@ -6,8 +6,10 @@ import TransactionForm from '../components/TransactionForm'
 
 import { MdLogout } from 'react-icons/md'
 import toast from 'react-hot-toast'
-import { useMutation } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { LOG_OUT } from '../graphql/mutations/user.mutation'
+import { GET_TRANSACTION_STATISTICS } from '../graphql/queries/transaction.query'
+import { useMemo } from 'react'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -15,12 +17,31 @@ const HomePage = () => {
     const [logout, { loading }] = useMutation(LOG_OUT, {
         refetchQueries: ['GetAuthenticatedUser'],
     })
+
+    const { data } = useQuery(GET_TRANSACTION_STATISTICS)
+    
+    const categoriesStatistic = useMemo(() => {
+        const categoriesStatistic = {}
+        
+        data?.categoryStatistics.forEach((categoryStatistic) => {
+            
+            categoriesStatistic[categoryStatistic.category] =
+                categoryStatistic.totalAmount
+        })
+        return categoriesStatistic
+    }, [data])
+        
+
     const chartData = {
         labels: ['Saving', 'Expense', 'Investment'],
         datasets: [
             {
                 label: '%',
-                data: [13, 8, 3],
+                data: [
+                    categoriesStatistic.saving,
+                    categoriesStatistic.expense || 0,
+                    categoriesStatistic.investment || 0,
+                ],
                 backgroundColor: [
                     'rgba(75, 192, 192)',
                     'rgba(255, 99, 132)',

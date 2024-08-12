@@ -12,7 +12,6 @@ const client = new ApolloClient({
     cache: new InMemoryCache(), //Apollo Client uses to cache query results after fetching them
     credentials: 'include', // This tells Apollo Client to send cookie along with every request to the server
 })
-console.log(client)
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
