@@ -1,11 +1,56 @@
+import { useMutation } from '@apollo/client'
 import { Button, Form, Input, Radio } from 'antd'
+import { useState } from 'react'
+import { SIGN_UP } from '../graphql/mutations/user.mutation'
+import toast from 'react-hot-toast'
 
 const SignUpPage = () => {
+    const [signUpData, setSignUpData] = useState({
+        name: '',
+        username: '',
+        password: '',
+        gender: '',
+    })
+
+    const [signUp, { loading }] = useMutation(SIGN_UP, {
+        refetchQueries: ['GetAuthenticatedUser'],
+    })
+    const handleOnChange = (e) => {
+        const { id, value, type, name } = e.target
+        if (type === 'radio' && id === undefined && name === 'gender')
+            setSignUpData((prevData) => ({
+                ...prevData,
+                [name]: value,
+            }))
+        else {
+            setSignUpData((prevData) => ({
+                ...prevData,
+                [id]: value,
+            }))
+        }
+    }
+
+    const handleSubmit = async () => {
+        try {
+            console.log(signUpData)
+
+            await signUp({
+                variables: {
+                    input: signUpData,
+                },
+            })
+        } catch (error) {
+            console.error('Error:', error)
+            toast.error(error.message)
+        }
+    }
+
     return (
         <div className="flex justify-center items-center flex-1">
             <Form
                 className="min-w-[400px] p-6 bg-white rounded-lg flex flex-col gap-1"
                 layout="vertical"
+                onFinish={handleSubmit}
             >
                 <h1 className="text-4xl font-bold text-center mb-2 select-none">
                     Sign Up
@@ -15,7 +60,7 @@ const SignUpPage = () => {
                 </p>
                 <Form.Item
                     label={<p className="form-label">Full Name</p>}
-                    name="fullName"
+                    name="name"
                     className="form-input"
                     rules={[
                         {
@@ -23,8 +68,9 @@ const SignUpPage = () => {
                             message: 'Please input your full name!',
                         },
                     ]}
+                    value={signUpData.name}
                 >
-                    <Input />
+                    <Input onChange={handleOnChange} />
                 </Form.Item>
 
                 <Form.Item
@@ -37,8 +83,9 @@ const SignUpPage = () => {
                             message: 'Please input your username!',
                         },
                     ]}
+                    value={signUpData.name}
                 >
-                    <Input />
+                    <Input onChange={handleOnChange} />
                 </Form.Item>
 
                 <Form.Item
@@ -51,13 +98,23 @@ const SignUpPage = () => {
                             message: 'Please input your password!',
                         },
                     ]}
+                    value={signUpData.name}
                 >
-                    <Input.Password />
+                    <Input.Password onChange={handleOnChange} />
                 </Form.Item>
 
-                <Form.Item label="Gender">
-                    <Radio.Group>
-                        <Radio className='bg-transparent' value="male">Male </Radio>
+                <Form.Item
+                    label={<p className="form-label">Gender</p>}
+                    value={signUpData.name}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input your gender!',
+                        },
+                    ]}
+                >
+                    <Radio.Group onChange={handleOnChange} name="gender">
+                        <Radio value="male">Male</Radio>
                         <Radio value="female">Female</Radio>
                     </Radio.Group>
                 </Form.Item>
@@ -67,6 +124,7 @@ const SignUpPage = () => {
                         type="primary"
                         htmlType="submit"
                         className="form-label w-full bg-black mt-3"
+                        loading={loading}
                     >
                         Sign Up
                     </Button>
