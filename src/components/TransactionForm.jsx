@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 
 const TransactionForm = () => {
     const [createTransaction, { loading }] = useMutation(CREATE_TRANSACTION, {
-        refetchQueries: ['GetTransactions']
+        refetchQueries: ['GetTransactions', 'GetTransactionStatistics']
     })
 
     const handleSubmit = async (e) => {
@@ -183,7 +183,7 @@ const TransactionForm = () => {
                 loading={loading.toString()}
                 onClick={handleSubmit}
             >
-                Add Transaction
+                {loading ? 'Updating...' : 'Add Transaction'}
             </button>
         </form>
     )

@@ -9,66 +9,81 @@ import toast from 'react-hot-toast'
 import { useMutation, useQuery } from '@apollo/client'
 import { LOG_OUT } from '../graphql/mutations/user.mutation'
 import { GET_TRANSACTION_STATISTICS } from '../graphql/queries/transaction.query'
-import { useMemo } from 'react'
+import { useEffect, useState } from 'react'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
 const HomePage = () => {
-    const [logout, { loading }] = useMutation(LOG_OUT, {
+    const [logout, { loading, client }] = useMutation(LOG_OUT, {
         refetchQueries: ['GetAuthenticatedUser'],
     })
-
     const { data } = useQuery(GET_TRANSACTION_STATISTICS)
-    
-    const categoriesStatistic = useMemo(() => {
-        const categoriesStatistic = {}
-        
-        data?.categoryStatistics.forEach((categoryStatistic) => {
-            
-            categoriesStatistic[categoryStatistic.category] =
-                categoryStatistic.totalAmount
-        })
-        return categoriesStatistic
-    }, [data])
-        
 
-    const chartData = {
-        labels: ['Saving', 'Expense', 'Investment'],
+    const [chartData, setChartData] = useState({
+        labels: [],
         datasets: [
             {
-                label: '%',
-                data: [
-                    categoriesStatistic.saving,
-                    categoriesStatistic.expense || 0,
-                    categoriesStatistic.investment || 0,
-                ],
-                backgroundColor: [
-                    'rgba(75, 192, 192)',
-                    'rgba(255, 99, 132)',
-                    'rgba(54, 162, 235)',
-                ],
-                borderColor: [
-                    'rgba(75, 192, 192)',
-                    'rgba(255, 99, 132)',
-                    'rgba(54, 162, 235, 1)',
-                ],
+                label: '$',
+                data: [],
+                backgroundColor: [],
+                borderColor: [],
                 borderWidth: 1,
                 borderRadius: 30,
                 spacing: 10,
                 cutout: 130,
             },
         ],
-    }
+    })
 
     const handleLogout = async () => {
         try {
             await logout()
             // Clear the Apollo Client cache
+            client.resetStore()
         } catch (error) {
             console.error('Error logging out: ', error)
             toast.error(error.message)
         }
     }
+
+    useEffect(() => {
+        if (data?.categoryStatistics) {
+            const categories = data.categoryStatistics.map(
+                (stat) => stat.category
+            )
+            const totalAmounts = data.categoryStatistics.map(
+                (stat) => stat.totalAmount
+            )
+
+            const backgroundColors = []
+            const borderColors = []
+
+            categories.forEach((category) => {
+                if (category === 'saving') {
+                    backgroundColors.push('rgba(75, 192, 192)')
+                    borderColors.push('rgba(75, 192, 192)')
+                } else if (category === 'expense') {
+                    backgroundColors.push('rgba(255, 99, 132)')
+                    borderColors.push('rgba(255, 99, 132)')
+                } else if (category === 'investment') {
+                    backgroundColors.push('rgba(54, 162, 235)')
+                    borderColors.push('rgba(54, 162, 235)')
+                }
+            })
+
+            setChartData((prevData) => ({
+                labels: categories,
+                datasets: [
+                    {
+                        ...prevData.datasets[0],
+                        data: totalAmounts,
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
+                    },
+                ],
+            }))
+        }
+    }, [data])
 
     return (
         <>

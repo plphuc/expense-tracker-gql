@@ -10,6 +10,7 @@ import { useMutation } from '@apollo/client'
 import { DELETE_TRANSACTION } from '../graphql/mutations/transaction.mutation'
 import toast from 'react-hot-toast'
 import { Spin } from 'antd'
+import toCapitalize from '../lib/formatString'
 
 const categoryColorMap = {
     saving: 'from-green-700 to-green-400',
@@ -22,7 +23,7 @@ const Card = ({ transaction }) => {
     const cardClass = categoryColorMap[transaction.category]
 
     const [deleteTransaction, { loading }] = useMutation(DELETE_TRANSACTION, {
-        refetchQueries: ['GetTransactions'],
+        refetchQueries: ['GetTransactions', 'GetTransactionStatistics'],
     })
 
     const handleDelete = async () => {
@@ -41,7 +42,7 @@ const Card = ({ transaction }) => {
         <div className={`rounded-md p-4 bg-gradient-to-br ${cardClass}`}>
             <div className="flex flex-col gap-3">
                 <div className="flex flex-row items-center justify-between">
-                    <h2 className="text-lg font-bold text-white">Saving</h2>
+                    <h2 className="text-lg font-bold text-white">{toCapitalize(transaction.category)}</h2>
                     <div className="flex items-center gap-2">
                         {!loading ? (
                             <FaTrash
@@ -59,14 +60,12 @@ const Card = ({ transaction }) => {
                 <p className="text-white flex items-center gap-1">
                     <BsCardText />
                     Description:{' '}
-                    {transaction.description[0].toUpperCase() +
-                        transaction.description.slice(1)}
+                    {toCapitalize(transaction.description)}
                 </p>
                 <p className="text-white flex items-center gap-1">
                     <MdOutlinePayments />
                     Payment Type:{' '}
-                    {transaction.paymentType[0].toUpperCase() +
-                        transaction.paymentType.slice(1)}
+                    {toCapitalize(transaction.paymentType)}
                 </p>
                 <p className="text-white flex items-center gap-1">
                     <FaSackDollar />
