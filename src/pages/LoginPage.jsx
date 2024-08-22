@@ -1,16 +1,10 @@
-import { useMutation } from '@apollo/client'
 import { Button, Form, Input } from 'antd'
-import { LOG_IN } from '../graphql/mutations/user.mutation'
-import toast from 'react-hot-toast'
-import { useState } from 'react'
+    import { useState } from 'react'
 
 const LoginPage = () => {
     const [logInData, setLogInData] = useState({
         username: '',
         password: '',
-    })
-    const [login, { loading }] = useMutation(LOG_IN, {
-        refetchQueries: ['GetAuthenticatedUser'],
     })
 
     const handleChange = (e) => {
@@ -22,12 +16,6 @@ const LoginPage = () => {
     }
 
     const handleSubmit = async () => {
-        try {
-            await login({ variables: { input: logInData } })
-        } catch (error) {
-            console.error('Error logging in: ', error)
-            toast.error(error.message)
-        }
     }
 
     return (
@@ -76,14 +64,13 @@ const LoginPage = () => {
                         type="primary"
                         htmlType="submit"
                         className="form-label w-full bg-black mt-3"
-                        loading={loading}
                     >
                         Login
                     </Button>
                 </Form.Item>
 
                 <p className="font-normal text-gray-400 text-center">
-                    {"Don't"} have an account? <a href="/sign-up">Sign Up</a>
+                    {"Don't"} have an account? <a href="/signup">Sign Up</a>
                 </p>
             </Form>
         </div>

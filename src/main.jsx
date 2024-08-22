@@ -8,7 +8,7 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 
 const client = new ApolloClient({
     // REMEMBER TO UPDATE THIS URL
-    uri: 'http://localhost:4000/graphql', // the URL of GraphQL Server
+    uri: 'https://expense-tracker-server-krnmb121m-plphucs-projects.vercel.app/graphql', // the URL of GraphQL Server
     cache: new InMemoryCache(), //Apollo Client uses to cache query results after fetching them
     credentials: 'include', // This tells Apollo Client to send cookie along with every request to the server
 })
